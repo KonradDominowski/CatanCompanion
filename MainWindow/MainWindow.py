@@ -1,10 +1,11 @@
 import os
 
 from PySide6.QtCore import Qt
-from PySide6.QtGui import QPixmap, QPalette, QBrush
-from PySide6.QtWidgets import QApplication, QMainWindow, QWidget, QVBoxLayout, QLabel, QPushButton
+from PySide6.QtWidgets import QApplication, QMainWindow, QWidget, QVBoxLayout, QStackedLayout, QComboBox
 from dotenv import load_dotenv
 
+from Pages.NewGamePage import NewGamePage
+from Pages.WelcomePage import WelcomePage
 from utils import read_css_file
 
 load_dotenv()
@@ -20,17 +21,26 @@ class MainWindow(QMainWindow):
 
         env = os.getenv('ENV')
         if env == 'dev':
-            self.setGeometry(1000, 1000, 1024, 600)
+            self.setGeometry(-500, 0, 1024, 600)
         elif env == 'prod':
             self.setWindowState(Qt.WindowState.WindowFullScreen)
 
-        center = QWidget(self)
-        self.setCentralWidget(center)
+        welcome_page = WelcomePage(self)
+        new_game_page = NewGamePage(self)
 
-        button = QPushButton('Test', self)
-        button2 = QPushButton('Test', self)
+        self.pages_layout = QStackedLayout()
+        self.pages_layout.addWidget(welcome_page)
+        self.pages_layout.addWidget(new_game_page)
+
+        self.page_combo_box = QComboBox()
+        self.page_combo_box.addItem("Welcome Page")
+        self.page_combo_box.addItem("New Game Page")
+        self.page_combo_box.activated.connect(
+            self.pages_layout.setCurrentIndex)
 
         main_layout = QVBoxLayout()
-        main_layout.addWidget(button)
-        main_layout.addWidget(button2)
-        center.setLayout(main_layout)
+        main_layout.addLayout(self.pages_layout)
+
+        self.container = QWidget()
+        self.container.setLayout(main_layout)
+        self.setCentralWidget(self.container)
