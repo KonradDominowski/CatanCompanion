@@ -2,8 +2,8 @@ from PySide6.QtCore import Qt
 from PySide6.QtWidgets import QWidget, QGridLayout
 
 from MainWindow import MainWindow
-from Widgets.Buttons.ShowPreviewButton import ShowPreviewButton
 from Widgets.Buttons.NewGameButton import NewGameButton
+from Widgets.Buttons.ShowPreviewButton import ShowPreviewButton
 from Widgets.Logo import Logo
 
 
@@ -11,6 +11,7 @@ class WelcomePage(QWidget):
     def __init__(self, main_window: MainWindow):
         super().__init__()
 
+        self.index = 0
         self.main_window = main_window
 
         logo = Logo()
@@ -26,4 +27,4 @@ class WelcomePage(QWidget):
         new_game_button.clicked.connect(self.start_new_game)
 
     def start_new_game(self):
-        self.main_window.pages_layout.setCurrentIndex(1)
+        self.main_window.slide_to_page(from_index=self.index, to_index=1, direction="left")
