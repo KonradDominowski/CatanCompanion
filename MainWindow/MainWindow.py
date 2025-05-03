@@ -20,7 +20,7 @@ class MainWindow(QMainWindow):
         self.setStyleSheet(self.stylesheet)
 
         self.animation_group: QParallelAnimationGroup | None = None
-        self.animation_duration_in_milliseconds = 500
+        self.animation_duration_in_milliseconds = 250
 
         env = os.getenv('ENV')
         if env == 'dev':
