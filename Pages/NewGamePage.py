@@ -9,15 +9,16 @@ class NewGamePage(QWidget):
     def __init__(self, main_window: MainWindow):
         super().__init__()
 
+        self.main_window = main_window
         self.index = 1
-        background = QWidget(self)
-        background.resize(main_window.size().width() - 18, main_window.size().height() - 18)
-        background.setStyleSheet("background-color: rgba(0, 0, 0, 0.7); border-radius: 50px")
-        background.setSizePolicy(QSizePolicy.Policy.Fixed, QSizePolicy.Policy.Fixed)
+        self.background = QWidget(self)
+        self.background.setStyleSheet("background-color: rgba(0, 0, 0, 0.6); border-radius: 50px")
+        self.background.setSizePolicy(QSizePolicy.Policy.Fixed, QSizePolicy.Policy.Fixed)
 
         return_button = ReturnButton(main_window, self)
         return_button.clicked.connect(
             lambda _: main_window.slide_to_page(self.index, 0, 'right'))
 
-        # Ensure layout is recalculated after widget size is set
+    def adjust_size(self):
+        self.background.resize(self.main_window.size().width() - 18, self.main_window.size().height() - 18)
         QTimer.singleShot(0, self.adjustSize)

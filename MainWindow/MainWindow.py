@@ -1,6 +1,7 @@
 import os
 
-from PySide6.QtCore import Qt, QPoint, QPropertyAnimation, QByteArray, QEasingCurve, QParallelAnimationGroup, QMargins
+from PySide6.QtCore import Qt, QPoint, QPropertyAnimation, QByteArray, QEasingCurve, QParallelAnimationGroup, QMargins, \
+    QTimer
 from PySide6.QtWidgets import QApplication, QMainWindow, QWidget, QVBoxLayout, QStackedLayout, QComboBox
 from dotenv import load_dotenv
 
@@ -20,7 +21,7 @@ class MainWindow(QMainWindow):
         self.setStyleSheet(self.stylesheet)
 
         self.animation_group: QParallelAnimationGroup | None = None
-        self.animation_duration_in_milliseconds = 500
+        self.animation_duration_in_milliseconds = 250
 
         env = os.getenv('ENV')
         if env == 'dev':
@@ -28,12 +29,14 @@ class MainWindow(QMainWindow):
         elif env == 'prod':
             self.setWindowState(Qt.WindowState.WindowFullScreen)
 
-        welcome_page = WelcomePage(self)
-        new_game_page = NewGamePage(self)
+        self.welcome_page = WelcomePage(self)
+        self.new_game_page = NewGamePage(self)
+
+        QTimer.singleShot(100, self.new_game_page.adjust_size)
 
         self.pages_layout = QStackedLayout()
-        self.pages_layout.addWidget(welcome_page)
-        self.pages_layout.addWidget(new_game_page)
+        self.pages_layout.addWidget(self.welcome_page)
+        self.pages_layout.addWidget(self.new_game_page)
 
         main_layout = QVBoxLayout()
         main_layout.addLayout(self.pages_layout)
@@ -43,6 +46,29 @@ class MainWindow(QMainWindow):
         self.setCentralWidget(self.container)
 
     def slide_to_page(self, from_index: int, to_index: int, direction: str = "left"):
+        """
+        Animates a sliding transition between pages in the application.
+
+        This function performs a smooth animated transition between two pages
+        managed by a QStackedLayout. The transition can be in one of four directions:
+        ``'left'``, ``'right'``, ``'up'``, or ``'down'``. The currently visible page (at ``from_index``)
+        slides out of view, while the target page (at ``to_index``) slides in.
+
+        :param from_index: Index of the currently visible page in the QStackedLayout.
+        :type from_index: int
+        :param to_index: Index of the target page to transition to.
+        :type to_index: int
+        :param direction: Direction of the animation. Must be one of:
+                          ``"left"``, ``"right"``, ``"up"``, or ``"down"``.
+        :type direction: str
+        :raises ValueError: If the direction is not one of the accepted values.
+
+        :Side effects:
+            - Starts a QParallelAnimationGroup to animate both outgoing and incoming widgets.
+            - Updates the current index of the stacked layout after the animation finishes.
+            - Ensures widgets are reset to correct positions after the animation.
+        """
+
         self.animation_group = QParallelAnimationGroup()
 
         left, top, right, bottom = self.container.layout().getContentsMargins()
