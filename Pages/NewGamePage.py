@@ -35,7 +35,7 @@ class NewGamePage(QWidget):
         # Players form
         players = QWidget()
         players.setObjectName('players')
-        players.setStyleSheet("QWidget#players {border: 1px solid white}")
+        # players.setStyleSheet("QWidget#players {border: 1px solid white}")
 
         layout = QVBoxLayout()
         for color in ['white', 'orange', 'blue', 'red']:
@@ -44,14 +44,7 @@ class NewGamePage(QWidget):
         players.setLayout(layout)
 
         # Preview
-        preview_container = QWidget()
-        preview_container.setStyleSheet("border: 1px solid red")
-        preview_container.setSizePolicy(QSizePolicy.Policy.Fixed, QSizePolicy.Policy.Fixed)
-        preview_layout = QVBoxLayout()
-
-        self.preview_label = Preview()
-        preview_layout.addWidget(self.preview_label)
-        preview_container.setLayout(preview_layout)
+        self.preview_container = QWidget()
 
         start_game_button = QPushButton("New Game")
         start_game_button.setStyleSheet("background-color: white")
@@ -61,10 +54,20 @@ class NewGamePage(QWidget):
 
         grid_layout.addWidget(spacer, 0, 0, 2, 2)
         grid_layout.addWidget(players, 2, 0, 14, 6)
-        grid_layout.addWidget(preview_container, 1, 6, 12, 6)
+        grid_layout.addWidget(self.preview_container, 2, 6, 12, 6)
         grid_layout.addWidget(start_game_button, 14, 9, 2, 3)
+
+        preview_layout = QVBoxLayout()
+        self.preview_label = Preview()
+        preview_layout.addWidget(self.preview_label)
+        self.preview_container.setLayout(preview_layout)
+
         self.background.setLayout(grid_layout)
 
     def adjust_size(self):
         self.background.resize(self.main_window.size().width() - 18, self.main_window.size().height() - 18)
         QTimer.singleShot(0, self.adjustSize)
+
+    def showEvent(self, event):
+        print(self.preview_container.size())
+        event.accept()

@@ -35,6 +35,7 @@ class MainWindow(QMainWindow):
         QTimer.singleShot(100, self.new_game_page.adjust_size)
 
         self.pages_layout = QStackedLayout()
+        # This order is changed for developing WelcomePage
         self.pages_layout.addWidget(self.welcome_page)
         self.pages_layout.addWidget(self.new_game_page)
 

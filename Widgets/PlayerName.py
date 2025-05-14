@@ -12,11 +12,11 @@ class PlayerName(QWidget):
         self.line.setStyleSheet(f"""QLineEdit#PlayerNameLineEdit {{ 
         padding: 15px;
         margin: 0px;
-        font-size: 40px;
-        font-weight: 500;
+        font-size: 30px;
+        font-weight: 400;
         color: white;
         border-radius: {20}px;
-        background-color: rgba(0,0,0,0.6);
+        background-color: rgba(0,0,0,0.3);
         }}""")
 
         self.color = QFrame()
@@ -25,7 +25,7 @@ class PlayerName(QWidget):
         background-color: {player_color};
         margin: 0px;
         }}""")
-        self.color.setFixedHeight(10)
+        self.color.setFixedHeight(7)
 
         layout.addWidget(self.line)
         layout.addWidget(self.color)

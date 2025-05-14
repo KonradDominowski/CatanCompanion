@@ -1,4 +1,4 @@
-from PySide6.QtCore import QObject, Signal, QThread
+from PySide6.QtCore import QObject, Signal
 import platform
 import cv2
 import time
@@ -17,7 +17,7 @@ class CameraWorker(QObject):
         super().__init__()
         self._running = True
         self._is_rpi = platform.machine().startswith("aarch")
-        
+
         if self._is_rpi and Picamera2:
             self.cam = Picamera2()
             self.cam.preview_configuration.main.size = (640, 480)
@@ -28,7 +28,6 @@ class CameraWorker(QObject):
         else:
             self.cam = cv2.VideoCapture(index)
             self.read_func = self._read_cv
-        
 
     def _read_cv(self):
         ret, frame = self.cam.read()
@@ -40,8 +39,7 @@ class CameraWorker(QObject):
             if frame is not None:
                 self.frame_ready.emit(frame)
             time.sleep(0.03)  # ~30 FPS
-        
-        print('stopped running')
+
         self._release()
         self.finished.emit()
 
