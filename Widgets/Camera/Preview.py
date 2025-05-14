@@ -47,6 +47,7 @@ class Preview(QLabel):
 
         self._camera_active = True
         self.thread = QThread()
+        
         self.worker = CameraWorker()
         self.worker.moveToThread(self.thread)
 
@@ -62,7 +63,8 @@ class Preview(QLabel):
         self.worker.stop()
         self.thread.quit()
         self.thread.wait()
-
+        
+        del self.worker
         self.worker = None
         self.thread = None
 

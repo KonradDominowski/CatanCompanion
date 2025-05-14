@@ -16,7 +16,8 @@ class CameraWorker(QObject):
     def __init__(self, index=0):
         super().__init__()
         self._running = True
-        self._is_rpi = platform.machine().startswith("arm")
+        self._is_rpi = platform.machine().startswith("aarch")
+        
         if self._is_rpi and Picamera2:
             self.cam = Picamera2()
             self.cam.preview_configuration.main.size = (640, 480)
@@ -27,6 +28,7 @@ class CameraWorker(QObject):
         else:
             self.cam = cv2.VideoCapture(index)
             self.read_func = self._read_cv
+        
 
     def _read_cv(self):
         ret, frame = self.cam.read()
@@ -38,7 +40,8 @@ class CameraWorker(QObject):
             if frame is not None:
                 self.frame_ready.emit(frame)
             time.sleep(0.03)  # ~30 FPS
-
+        
+        print('stopped running')
         self._release()
         self.finished.emit()
 
@@ -47,6 +50,8 @@ class CameraWorker(QObject):
 
     def _release(self):
         if self._is_rpi:
+            print('self.cam.stop()')
             self.cam.stop()
+            self.cam.close()
         else:
             self.cam.release()
