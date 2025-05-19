@@ -1,11 +1,11 @@
 import os
 
-from PySide6.QtCore import Qt, QPoint, QPropertyAnimation, QByteArray, QEasingCurve, QParallelAnimationGroup, QMargins, \
-    QTimer
-from PySide6.QtWidgets import QApplication, QMainWindow, QWidget, QVBoxLayout, QStackedLayout, QComboBox
+from PySide6.QtCore import Qt, QPoint, QPropertyAnimation, QByteArray, QEasingCurve, QParallelAnimationGroup
+from PySide6.QtWidgets import QApplication, QMainWindow, QWidget, QVBoxLayout, QStackedLayout
 from dotenv import load_dotenv
 
 from Pages.NewGamePage import NewGamePage
+from Pages.Page import Page
 from Pages.WelcomePage import WelcomePage
 from utils import read_css_file
 
@@ -21,7 +21,7 @@ class MainWindow(QMainWindow):
         self.setStyleSheet(self.stylesheet)
 
         self.animation_group: QParallelAnimationGroup | None = None
-        self.animation_duration_in_milliseconds = 250
+        self.ANIMATION_DURATION_IN_MILLISECONDS = 250
 
         env = os.getenv('ENV')
         if env == 'dev':
@@ -29,15 +29,12 @@ class MainWindow(QMainWindow):
         elif env == 'prod':
             self.setWindowState(Qt.WindowState.WindowFullScreen)
 
-        self.welcome_page = WelcomePage(self)
-        self.new_game_page = NewGamePage(self)
-
-        QTimer.singleShot(100, self.new_game_page.adjust_size)
-
         self.pages_layout = QStackedLayout()
-        # This order is changed for developing WelcomePage
-        self.pages_layout.addWidget(self.welcome_page)
-        self.pages_layout.addWidget(self.new_game_page)
+
+        self.welcome_page = self.add_page(WelcomePage)
+        self.new_game_page = self.add_page(NewGamePage)
+
+        self.calculate_pages_dimensions()
 
         main_layout = QVBoxLayout()
         main_layout.addLayout(self.pages_layout)
@@ -98,14 +95,14 @@ class MainWindow(QMainWindow):
 
         anim_from = QPropertyAnimation(from_widget, QByteArray(b"pos"))
         anim_from.setEndValue(from_end_pos)
-        anim_from.setDuration(self.animation_duration_in_milliseconds)
+        anim_from.setDuration(self.ANIMATION_DURATION_IN_MILLISECONDS)
         anim_from.setEasingCurve(QEasingCurve.Type.OutCubic)
         anim_from.start()
 
         anim_to = QPropertyAnimation(to_widget, QByteArray(b"pos"))
         anim_to.setStartValue(to_start_pos)
         anim_to.setEndValue(QPoint(0, 0) + QPoint(9, 9))
-        anim_to.setDuration(self.animation_duration_in_milliseconds)
+        anim_to.setDuration(self.ANIMATION_DURATION_IN_MILLISECONDS)
         anim_to.setEasingCurve(QEasingCurve.Type.OutCubic)
 
         self.animation_group.addAnimation(anim_from)
@@ -119,3 +116,47 @@ class MainWindow(QMainWindow):
 
         self.animation_group.finished.connect(on_finished)
         self.animation_group.start()
+
+    def add_page(self, page: type[Page]) -> Page:
+        """
+           Creates an instance of the given page class and adds it to the stacked layout.
+
+           This method takes a page class (which must inherit from `Page`), creates an instance
+           of it by passing the `MainWindow` as an argument, and adds the resulting widget
+           to the `QStackedLayout`. It returns the created instance for further use.
+
+           :param page: A subclass of `Page` to be instantiated and added to the layout.
+           :type page: type[Page]
+           :return: The instance of the page that was added to the layout.
+           :rtype: Page
+
+           :raises TypeError: If the given argument is not a subclass of `Page`.
+
+           Note:
+               This method assumes that all pages accept `MainWindow` as their only constructor argument.
+           """
+        new_page = page(self)
+        self.pages_layout.addWidget(new_page)
+
+        return new_page
+
+    def calculate_pages_dimensions(self):
+        """
+            Forces layout recalculation for all pages in the QStackedLayout except the first one.
+
+            This method iterates over all pages starting from index 1 and calls their
+            `adjust_size()` method to ensure Qt calculates the proper layout size
+            before any animations or transitions occur.
+
+            Side effects:
+                - Temporarily displays each page off-screen and recalculates its size.
+
+            Note:
+                This assumes all widgets in the layout are instances of `Page` or its subclasses.
+            """
+        widget_count = self.pages_layout.count()
+        for i in range(1, widget_count):
+            page = self.pages_layout.widget(i)
+
+            if isinstance(page, Page):
+                page.adjust_size()

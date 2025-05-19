@@ -1,18 +1,16 @@
 from PySide6.QtCore import Qt
-from PySide6.QtWidgets import QWidget, QGridLayout
+from PySide6.QtWidgets import QGridLayout
 
 from MainWindow import MainWindow
+from Pages.Page import Page
 from Widgets.Buttons.NewGameButton import NewGameButton
 from Widgets.Buttons.ShowPreviewButton import ShowPreviewButton
 from Widgets.Logo import Logo
 
 
-class WelcomePage(QWidget):
+class WelcomePage(Page):
     def __init__(self, main_window: MainWindow):
-        super().__init__()
-
-        self.index = 0
-        self.main_window = main_window
+        super().__init__(main_window)
 
         logo = Logo()
         new_game_button = NewGameButton()

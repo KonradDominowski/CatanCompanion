@@ -1,5 +1,5 @@
 import cv2
-from PySide6.QtCore import QThread, Qt
+from PySide6.QtCore import QThread, Qt, QTimer
 from PySide6.QtGui import QImage, QPixmap
 from PySide6.QtWidgets import QLabel, QSizePolicy
 
@@ -7,10 +7,12 @@ from Camera.CameraWorker import CameraWorker
 
 
 class Preview(QLabel):
+    layout_calculated = False
+
     def __init__(self):
         super().__init__()
 
-        self.setStyleSheet("border: 1px solid yellow")
+        self.setStyleSheet("border: 10px solid rgba(0, 0, 0, 1)")
 
         self.thread = None
         self.worker = None
@@ -55,6 +57,8 @@ class Preview(QLabel):
 
     def showEvent(self, event):
         super().showEvent(event)
+
+        # The first time it's showed it only is shown to calculate the layout, no need for the camera to activate
         self.start_camera()
 
     def hideEvent(self, event):

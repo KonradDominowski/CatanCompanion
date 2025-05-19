@@ -1,20 +1,16 @@
-from PySide6.QtCore import QTimer, Qt
-from PySide6.QtWidgets import QWidget, QSizePolicy, QGridLayout, QPushButton, QVBoxLayout, QLabel, QGroupBox, \
-    QFormLayout, QLineEdit
+from PySide6.QtWidgets import QWidget, QSizePolicy, QGridLayout, QPushButton, QVBoxLayout
 
-from Camera.CameraFeed import create_camera_feed
 from MainWindow import MainWindow
+from Pages.Page import Page
 from Widgets.Buttons.ReturnButton import ReturnButton
 from Widgets.Camera.Preview import Preview
 from Widgets.PlayerName import PlayerName
 
 
-class NewGamePage(QWidget):
+class NewGamePage(Page):
     def __init__(self, main_window: MainWindow):
-        super().__init__()
+        super().__init__(main_window)
 
-        self.main_window = main_window
-        self.index = 1
         self.background = QWidget(self)
         self.background.setObjectName("background")
         self.background.setStyleSheet("""
@@ -35,7 +31,6 @@ class NewGamePage(QWidget):
         # Players form
         players = QWidget()
         players.setObjectName('players')
-        # players.setStyleSheet("QWidget#players {border: 1px solid white}")
 
         layout = QVBoxLayout()
         for color in ['white', 'orange', 'blue', 'red']:
@@ -47,7 +42,12 @@ class NewGamePage(QWidget):
         self.preview_container = QWidget()
 
         start_game_button = QPushButton("New Game")
-        start_game_button.setStyleSheet("background-color: white")
+        start_game_button.setObjectName('start_game_button')
+        start_game_button.setStyleSheet("""
+          QPushButton#start_game_button {
+             background-color: white;
+             font-family: arno;
+          }""")
 
         spacer = QWidget()
         spacer.setVisible(False)
@@ -66,8 +66,4 @@ class NewGamePage(QWidget):
 
     def adjust_size(self):
         self.background.resize(self.main_window.size().width() - 18, self.main_window.size().height() - 18)
-        QTimer.singleShot(0, self.adjustSize)
-
-    def showEvent(self, event):
-        print(self.preview_container.size())
-        event.accept()
+        super().adjust_size()

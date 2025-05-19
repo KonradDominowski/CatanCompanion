@@ -1,4 +1,6 @@
-from PySide6.QtWidgets import QWidget, QVBoxLayout, QLineEdit, QFrame
+from PySide6.QtWidgets import QWidget, QVBoxLayout, QLineEdit, QFrame, QLayout
+
+from Widgets.RhombusFrame import RhombusFrame
 
 
 class PlayerName(QWidget):
@@ -10,24 +12,20 @@ class PlayerName(QWidget):
         self.line.setPlaceholderText("Long placeholder")
         self.line.setObjectName('PlayerNameLineEdit')
         self.line.setStyleSheet(f"""QLineEdit#PlayerNameLineEdit {{ 
+        font-family: arno;
         padding: 15px;
         margin: 0px;
         font-size: 30px;
-        font-weight: 400;
+        font-weight: 500;
         color: white;
         border-radius: {20}px;
         background-color: rgba(0,0,0,0.3);
         }}""")
 
-        self.color = QFrame()
-        self.color.setObjectName('PlayerNameColorFrame')
-        self.color.setStyleSheet(f"""QFrame#PlayerNameColorFrame {{
-        background-color: {player_color};
-        margin: 0px;
-        }}""")
-        self.color.setFixedHeight(7)
+        self.color = RhombusFrame(player_color, self)
 
         layout.addWidget(self.line)
         layout.addWidget(self.color)
+        layout.setSpacing(0)
 
         self.setLayout(layout)
