@@ -48,7 +48,6 @@ class CameraWorker(QObject):
 
     def _release(self):
         if self._is_rpi:
-            print('self.cam.stop()')
             self.cam.stop()
             self.cam.close()
         else:

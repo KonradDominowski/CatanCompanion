@@ -27,9 +27,9 @@ class MainWindow(QMainWindow):
         self.animation_group: QParallelAnimationGroup | None = None
 
         env = os.getenv('ENV')
-        if env == 'dev':
-            self.setGeometry(-500, 0, 1024, 600)
-        elif env == 'prod':
+        self.setGeometry(0, 0, 1024, 600)
+
+        if env == 'prod':
             self.setWindowState(Qt.WindowState.WindowFullScreen)
 
         self.pages_layout = QStackedLayout()
