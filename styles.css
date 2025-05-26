@@ -1,5 +1,6 @@
 QWidget {
     font-family: arno;
+    font-weight: bold;
 }
 
 QMainWindow {

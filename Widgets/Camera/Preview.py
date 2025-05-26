@@ -12,7 +12,7 @@ class Preview(QLabel):
     def __init__(self):
         super().__init__()
 
-        self.setStyleSheet("border: 10px solid rgba(0, 0, 0, 1)")
+        self.setStyleSheet("border: 4px solid rgba(0, 0, 0, 0.8)")
 
         self.thread = None
         self.worker = None

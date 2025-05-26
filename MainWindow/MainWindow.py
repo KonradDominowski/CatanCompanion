@@ -4,6 +4,7 @@ from PySide6.QtCore import Qt, QPoint, QPropertyAnimation, QByteArray, QEasingCu
 from PySide6.QtWidgets import QApplication, QMainWindow, QWidget, QVBoxLayout, QStackedLayout
 from dotenv import load_dotenv
 
+from Pages.GamePage import GamePage
 from Pages.NewGamePage import NewGamePage
 from Pages.Page import Page
 from Pages.WelcomePage import WelcomePage
@@ -13,15 +14,17 @@ load_dotenv()
 
 
 class MainWindow(QMainWindow):
+    ANIMATION_DURATION_IN_MILLISECONDS = 400
+
     def __init__(self, app: QApplication):
         super().__init__()
 
         self.app = app
+        self.setWindowTitle("Catan Companion")
         self.stylesheet = read_css_file('./styles.css')
         self.setStyleSheet(self.stylesheet)
 
         self.animation_group: QParallelAnimationGroup | None = None
-        self.ANIMATION_DURATION_IN_MILLISECONDS = 250
 
         env = os.getenv('ENV')
         if env == 'dev':
@@ -33,6 +36,7 @@ class MainWindow(QMainWindow):
 
         self.welcome_page = self.add_page(WelcomePage)
         self.new_game_page = self.add_page(NewGamePage)
+        self.game_page = self.add_page(GamePage)
 
         self.calculate_pages_dimensions()
 

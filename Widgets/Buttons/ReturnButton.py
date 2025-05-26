@@ -6,9 +6,9 @@ from MainWindow import MainWindow
 
 
 class ReturnButton(QToolButton):
-    def __init__(self, main_window: MainWindow, parent=None):
+    def __init__(self, main_window=None, parent=None):
         super().__init__(parent)
-        self.main_window = main_window
+        # self.main_window = main_window
         self.move(15, 15)
         self.setFixedSize(60, 60)
 
