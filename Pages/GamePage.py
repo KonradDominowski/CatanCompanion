@@ -1,11 +1,11 @@
-from PySide6.QtCore import Qt
-from PySide6.QtWidgets import QWidget, QSizePolicy, QVBoxLayout, QLabel, QFrame
+from PySide6.QtWidgets import QWidget, QSizePolicy, QVBoxLayout, QLabel
 
 from Catan.Game import Game
 from Catan.PlayerColor import PlayerColor
 from MainWindow import MainWindow
 from Pages.Page import Page
 from Widgets.Buttons.ReturnButton import ReturnButton
+from Widgets.Player import Player
 
 
 class GamePage(Page):
@@ -52,30 +52,8 @@ class GamePage(Page):
         self.layout.addWidget(top_bar)
 
         for color, player in self.game.get_players().items():
-            border_gradient = f"""2px solid qlineargradient(x1:0, y1:0, x2:1, y2:0,
-                                                stop:0 rgba({color.r}, {color.g}, {color.b}, 1),
-                                                stop:0.85 rgba({color.r}, {color.g}, {color.b}, 0)
-                                                );"""
-            player = QLabel(player)
-            player.setStyleSheet(f"""
-            color: white;
-            padding-left: 3px;
-            font-size: 24px;
-            border-top: {border_gradient};
-            border-bottom: {border_gradient};
-            border-left: 2px solid {color.hex};
-            """)
+            player = Player(color, player)
             self.layout.addWidget(player)
-
-        # for i in range(self.layout.count() - 1, 1, -1):
-        #     separator = QFrame()
-        #     separator.setFrameShape(QFrame.HLine)
-        #     separator.setFrameShadow(QFrame.Sunken)  # lub .Plain
-        #     separator.setStyleSheet("background-color: rgba(255, 255, 255, 0.15); height: 2px;")
-        #     separator.setFixedHeight(1)  # ustalona wysokość linii
-        #     separator.setFixedWidth(self.background.width() - 30)
-        #
-        #     self.layout.insertWidget(i, separator, alignment=Qt.AlignmentFlag.AlignHCenter)
 
         self.setLayout(self.layout)
         self.return_button.raise_()  # Przenosi return_button ponad dodane widgety
