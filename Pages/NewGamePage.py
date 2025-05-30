@@ -29,7 +29,9 @@ class NewGamePage(Page):
 
         return_button = ReturnButton(main_window, self)
         return_button.clicked.connect(
-            lambda _: main_window.slide_to_page(self.index, 0, 'right'))
+            lambda _: main_window.slide_to_page(self.index,
+                                                self.main_window.welcome_page.index,
+                                                'right'))
 
         # Layout
         grid_layout = QGridLayout()  # Grid 16 x 11
@@ -103,4 +105,4 @@ class NewGamePage(Page):
                 players[key] = value
 
         self.new_game_started.emit(players)
-        self.main_window.slide_to_page(self.index, 2, 'left')
+        self.main_window.slide_to_page(self.index, self.main_window.game_page.index, 'left')

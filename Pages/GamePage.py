@@ -6,7 +6,9 @@ from Catan.PlayerColor import PlayerColor
 from MainWindow import MainWindow
 from Pages.Page import Page
 from Widgets.Buttons.ReturnButton import ReturnButton
+from Widgets.Game.Resource import ResourceType
 from Widgets.Player import Player
+from utils import sort_resource_counts_desc, empty_resources_dict
 
 
 class GamePage(Page):
@@ -24,6 +26,7 @@ class GamePage(Page):
                 """)
         self.background.setSizePolicy(QSizePolicy.Policy.Fixed, QSizePolicy.Policy.Fixed)
 
+        # Return button
         self.return_button = ReturnButton(main_window, self)
         self.return_button.clicked.connect(self.end_game)
 
@@ -56,14 +59,16 @@ class GamePage(Page):
         top_bar.setFixedHeight(85)
         self.layout.addWidget(top_bar)
 
+        # Reset button - now for development and testing
         reset_button = QPushButton('Reset')
         reset_button.setStyleSheet("color:black; background: white; padding: 5px ")
         reset_button.clicked.connect(self.clear_all_resources)
         top_bar.layout().addWidget(reset_button)
 
+        # Show resources - now for development and testing
         show_resources_button = QPushButton("Show resources")
         show_resources_button.setStyleSheet("color:black; background: white; padding: 5px ")
-        show_resources_button.clicked.connect(lambda _: self.show_all_resources(3))
+        show_resources_button.clicked.connect(lambda _: self.show_all_resources())
         top_bar.layout().addWidget(show_resources_button)
 
         # Players
@@ -75,22 +80,34 @@ class GamePage(Page):
         self.setLayout(self.layout)
         self.return_button.raise_()  # Przenosi return_button ponad dodane widgety
 
-        self.show_all_resources(5)
+        self.show_all_resources()
 
     def end_game(self):
+        # TODO - layout się nie usuwa, trzeba to jako rozwiązać
         self.game = None
         self.layout = None
-        self.main_window.slide_to_page(self.index, 1, 'right')
+        self.main_window.slide_to_page(self.index, self.main_window.new_game_page.index, 'right')
 
     def clear_all_resources(self):
         for player in self.players:
             player.clear_resources()
 
-    def show_all_resources(self, count):
+    def show_all_resources(self):
         animations: list[QPropertyAnimation] = []
 
+        color_resources = empty_resources_dict(self.game.get_colors())
+
+        color_resources['white'].update({
+            ResourceType.SHEEP: 5,
+            ResourceType.WOOD: 3
+        })
+        color_resources[PlayerColor.ORANGE][ResourceType.ORE] = 4
+
+        # Sorting to display resources from most to least abundant
+        sorted_dict = sort_resource_counts_desc(color_resources)
+
         for player in self.players:
-            player.show_resources(count)
+            player.show_resources(sorted_dict.get(player.get_color()))
             animations.extend(player.get_animations())
 
         for i, anim in enumerate(animations):
@@ -98,4 +115,3 @@ class GamePage(Page):
 
         if animations:
             animations[-1].finished.connect(animations.clear())
-

@@ -1,11 +1,11 @@
-from enum import StrEnum
+from enum import Enum
 
-from PySide6.QtCore import Qt, QPropertyAnimation, QSize, QEasingCurve, QRect
+from PySide6.QtCore import Qt, QPropertyAnimation, QEasingCurve, QRect
 from PySide6.QtGui import QPixmap
-from PySide6.QtWidgets import QLabel, QFrame, QWidget
+from PySide6.QtWidgets import QLabel, QWidget
 
 
-class ResourceType(StrEnum):
+class ResourceType(Enum):
     WOOD = 'wood'
     BRICK = 'brick'
     WHEAT = 'wheat'
@@ -20,7 +20,7 @@ class Resource(QWidget):
         self.setFixedSize(40, 40)  # STAŁY rozmiar widoczny w layoucie
 
         self.type = resource_type
-        self.icon_path = f"./assets/res_{self.type}.png"
+        self.icon_path = f"./assets/res_{self.type.value}.png"
 
         # QLabel wewnątrz - będzie animowany
         self.icon_label = QLabel(self)

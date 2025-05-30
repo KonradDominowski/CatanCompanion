@@ -20,14 +20,19 @@ class Page(QWidget):
         super().__init__()
 
         self.main_window = main_window
-        self.index = main_window.pages_layout.count()
+        self._index = main_window.pages_layout.count()
+
+    @property
+    def index(self):
+        return self._index
 
     def adjust_size(self):
         """
            Temporarily displays the page off-screen to allow Qt to calculate its proper size.
 
            Qt cannot automatically determine the correct size of invisible widgets.
-           This method briefly shows the page far off-screen (`move(-10000, -10000)`) so that Qt can compute its layout size. It then schedules `adjustSize()` to resize the widget to fit its content, and hides the widget again.
+           This method briefly shows the page far off-screen (`move(-10000, -10000)`) so that Qt can compute its layout size.
+            It then schedules `adjustSize()` to resize the widget to fit its content, and hides the widget again.
 
            Side effects:
                - Sets the page's parent to `main_window` if it isn't already.

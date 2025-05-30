@@ -25,4 +25,6 @@ class WelcomePage(Page):
         new_game_button.clicked.connect(self.start_new_game)
 
     def start_new_game(self):
-        self.main_window.slide_to_page(from_index=self.index, to_index=1, direction="left")
+        self.main_window.slide_to_page(from_index=self.index,
+                                       to_index=self.main_window.new_game_page.index,
+                                       direction="left")

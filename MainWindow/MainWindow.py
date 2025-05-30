@@ -10,6 +10,7 @@ from Pages.Page import Page
 from Pages.WelcomePage import WelcomePage
 from utils import read_css_file
 
+
 load_dotenv()
 
 
@@ -23,15 +24,13 @@ class MainWindow(QMainWindow):
         self.setWindowTitle("Catan Companion")
         self.stylesheet = read_css_file('./styles.css')
         self.setStyleSheet(self.stylesheet)
-
-        self.animation_group: QParallelAnimationGroup | None = None
+        self.setGeometry(0, 0, 1024, 600)  # 1024 x 600 is the size of the dedicated touch screen display
 
         env = os.getenv('ENV')
-        self.setGeometry(0, 0, 1024, 600)
-
         if env == 'prod':
             self.setWindowState(Qt.WindowState.WindowFullScreen)
 
+        # Pages of the application
         self.pages_layout = QStackedLayout()
 
         self.welcome_page = self.add_page(WelcomePage)
@@ -39,6 +38,9 @@ class MainWindow(QMainWindow):
         self.game_page = self.add_page(GamePage)
 
         self.calculate_pages_dimensions()
+
+        # Animation group for transitions between pages
+        self.animation_group: QParallelAnimationGroup | None = None
 
         main_layout = QVBoxLayout()
         main_layout.addLayout(self.pages_layout)
