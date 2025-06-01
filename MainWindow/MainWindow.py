@@ -1,15 +1,15 @@
 import os
 
-from PySide6.QtCore import Qt, QPoint, QPropertyAnimation, QByteArray, QEasingCurve, QParallelAnimationGroup
+from PySide6.QtCore import Qt, QPoint, QPropertyAnimation, QByteArray, QEasingCurve, QParallelAnimationGroup, QThread
 from PySide6.QtWidgets import QApplication, QMainWindow, QWidget, QVBoxLayout, QStackedLayout
 from dotenv import load_dotenv
 
+from Camera.ImportWorker import ImportWorker
 from Pages.GamePage import GamePage
 from Pages.NewGamePage import NewGamePage
 from Pages.Page import Page
 from Pages.WelcomePage import WelcomePage
 from utils import read_css_file
-
 
 load_dotenv()
 
@@ -19,6 +19,11 @@ class MainWindow(QMainWindow):
 
     def __init__(self, app: QApplication):
         super().__init__()
+
+        self.import_thread = QThread()
+        self.import_worker = ImportWorker()
+
+        self.import_libraries()
 
         self.app = app
         self.setWindowTitle("Catan Companion")
@@ -166,3 +171,17 @@ class MainWindow(QMainWindow):
 
             if isinstance(page, Page):
                 page.adjust_size()
+
+    def import_libraries(self):
+        self.import_worker.moveToThread(self.import_thread)
+
+        self.import_thread.started.connect(self.import_worker.run)
+        self.import_worker.finished.connect(self.on_import_finished)
+        self.import_worker.finished.connect(self.import_thread.quit)
+        self.import_worker.finished.connect(self.import_worker.deleteLater)
+        self.import_thread.finished.connect(self.import_thread.deleteLater)
+
+        self.import_thread.start()
+
+    def on_import_finished(self):
+        print('Import finished')
