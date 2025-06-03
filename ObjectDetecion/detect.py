@@ -1,4 +1,6 @@
 import os
+import time
+
 from ultralytics import YOLO
 
 # project_root = r'C:\Users\Konrad\Documents\pythonProject\pythonProject'
@@ -13,7 +15,21 @@ classes = {
     'robber': [34]
 }
 
-for key, value in classes.items():
-    model = YOLO(model)
-    result = model.predict(img_path, classes=value, imgsz=1600)
-    result[0].save('./test' + os.sep + key + '.jpg')
+# for key, value in classes.items():
+#     model = YOLO(model)
+#
+#     start = time.time()
+#     result = model.predict(img_path, classes=value, imgsz=1600)
+#     end = time.time()
+#
+#     print(f"Czas inferencji: {(end - start) * 1000:.2f} ms")
+#     result[0].save('./test' + os.sep + key + '.jpg')
+#
+model = YOLO(model)
+
+start = time.time()
+result = model.predict(img_path, imgsz=1600)
+end = time.time()
+
+print(f"Czas inferencji: {(end - start) * 1000:.2f} ms")
+result[0].save('./test' + os.sep + 'yolo' + '.jpg')
