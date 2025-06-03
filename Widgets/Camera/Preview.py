@@ -3,7 +3,7 @@ from PySide6.QtCore import QThread, Qt, QTimer
 from PySide6.QtGui import QImage, QPixmap
 from PySide6.QtWidgets import QLabel, QSizePolicy
 
-from Camera.CameraWorker import CameraWorker
+from Workers.CameraWorker import CameraWorker
 
 
 class Preview(QLabel):

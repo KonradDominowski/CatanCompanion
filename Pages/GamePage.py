@@ -56,7 +56,7 @@ class GamePage(Page):
         top_bar.setLayout(QHBoxLayout())
         top_bar.layout().setAlignment(Qt.AlignmentFlag.AlignRight)
         top_bar.setStyleSheet("border: 1px solid rgba(255,255,255, 0.25)")
-        top_bar.setFixedHeight(85)
+        top_bar.setFixedHeight(65)
         self.layout.addWidget(top_bar)
 
         # Reset button - now for development and testing
@@ -94,14 +94,39 @@ class GamePage(Page):
 
     def show_all_resources(self):
         animations: list[QPropertyAnimation] = []
+        animation_delay_in_ms: int = 25
 
         color_resources = empty_resources_dict(self.game.get_colors())
 
         color_resources['white'].update({
-            ResourceType.SHEEP: 5,
-            ResourceType.WOOD: 3
+            ResourceType.SHEEP: 4,
+            # ResourceType.WOOD: 6,
+            # ResourceType.ORE: 6,
+            # ResourceType.WHEAT: 6,
+            # ResourceType.BRICK: 6
         })
-        color_resources[PlayerColor.ORANGE][ResourceType.ORE] = 4
+        color_resources['orange'].update({
+            # ResourceType.SHEEP: 6,
+            # ResourceType.WOOD: 6,
+            ResourceType.ORE: 2,
+            ResourceType.WHEAT: 6,
+            ResourceType.BRICK: 1
+        })
+        color_resources['blue'].update({
+            ResourceType.SHEEP: 1,
+            ResourceType.WOOD: 1,
+            ResourceType.ORE: 1,
+            ResourceType.WHEAT: 2,
+            ResourceType.BRICK: 1
+        })
+        color_resources['red'].update({
+            # ResourceType.SHEEP: 6,
+            # ResourceType.WOOD: 6,
+            # ResourceType.ORE: 6,
+            # ResourceType.WHEAT: 6,
+            # ResourceType.BRICK: 6
+        })
+        # color_resources[PlayerColor.ORANGE][ResourceType.ORE] = 4
 
         # Sorting to display resources from most to least abundant
         sorted_dict = sort_resource_counts_desc(color_resources)
@@ -111,7 +136,7 @@ class GamePage(Page):
             animations.extend(player.get_animations())
 
         for i, anim in enumerate(animations):
-            QTimer.singleShot(i * 10, anim.start)
+            QTimer.singleShot(i * animation_delay_in_ms, anim.start)
 
         if animations:
             animations[-1].finished.connect(animations.clear())

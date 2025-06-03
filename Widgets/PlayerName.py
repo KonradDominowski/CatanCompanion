@@ -34,7 +34,7 @@ class PlayerName(QWidget):
 
         # Only for developing
         if self.color == PlayerColor.WHITE:
-            self.line.setText('Długa nazwa testowa')
+            self.line.setText('Długa nazwa')
         elif self.color == PlayerColor.RED:
             self.line.setText('Test 2')
         elif self.color == PlayerColor.ORANGE:

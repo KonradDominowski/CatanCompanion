@@ -1,12 +1,13 @@
-from PySide6.QtCore import QObject, Signal, QThread
+from PySide6.QtCore import QObject, Signal
 
 
 class ImportWorker(QObject):
     finished = Signal()
 
     def run(self):
-        print('importing')
-        global ultralytics
+        global ultralytics, cv2
+        import cv2
         import ultralytics
+
         self.finished.emit()
 

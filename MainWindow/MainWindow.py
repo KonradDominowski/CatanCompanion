@@ -4,11 +4,11 @@ from PySide6.QtCore import Qt, QPoint, QPropertyAnimation, QByteArray, QEasingCu
 from PySide6.QtWidgets import QApplication, QMainWindow, QWidget, QVBoxLayout, QStackedLayout
 from dotenv import load_dotenv
 
-from Camera.ImportWorker import ImportWorker
 from Pages.GamePage import GamePage
 from Pages.NewGamePage import NewGamePage
 from Pages.Page import Page
 from Pages.WelcomePage import WelcomePage
+from Workers.ImportWorker import ImportWorker
 from utils import read_css_file
 
 load_dotenv()

@@ -17,10 +17,13 @@ class Resource(QWidget):
     def __init__(self, resource_type: ResourceType, parent=None):
         super().__init__(parent)
 
-        self.setFixedSize(40, 40)  # STAŁY rozmiar widoczny w layoucie
+        size = 50
+
+        self.setFixedSize(size, size)  # STAŁY rozmiar widoczny w layoucie
 
         self.type = resource_type
-        self.icon_path = f"./assets/res_{self.type.value}.png"
+        # self.icon_path = f"./assets/res_{self.type.value}.png"
+        self.icon_path = f"./assets/res_{self.type.value}_glow_subtle.png"
 
         # QLabel wewnątrz - będzie animowany
         self.icon_label = QLabel(self)
@@ -30,9 +33,9 @@ class Resource(QWidget):
 
         # Animacja rozmiaru QLabel (geometry)
         self.animation = QPropertyAnimation(self.icon_label, b"geometry")
-        self.animation.setDuration(1000)
-        self.animation.setStartValue(QRect(10, 10, 20, 20))
-        self.animation.setEndValue(QRect(0, 0, 40, 40))  # rozciąga się do pełnego rozmiaru rodzica
+        self.animation.setDuration(750)
+        # self.animation.setStartValue(QRect(margin, margin, start_size, start_size))
+        self.animation.setEndValue(QRect(0, 0, size, size))  # rozciąga się do pełnego rozmiaru rodzica
         self.animation.setEasingCurve(QEasingCurve.Type.OutBack)
 
     def resize_icon(self):
