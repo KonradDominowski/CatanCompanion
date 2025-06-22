@@ -1,14 +1,15 @@
-from PySide6.QtCore import QSize
+from PySide6.QtCore import QSize, QTimer
 from PySide6.QtWidgets import QPushButton
 import cv2
 from datetime import datetime
-from picamera2 import Picamera2
+from picamera2 import Picamera2, controls
 import os
 
 
 class ShowPreviewButton(QPushButton):
     def __init__(self, text: str):
         super().__init__(text)
+        self.original_text = "Take Photo"
         self.setObjectName('ShowPreviewButton')
         self.setFixedSize(QSize(250, 50))
         self.setStyleSheet(f"border-radius: {int(self.height() / 2)}")
